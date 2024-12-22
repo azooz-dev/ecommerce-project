@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\Category\CategoryController;
+use App\Http\Controllers\Order\OrderController;
+use App\Http\Controllers\Product\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +19,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+// Categories
+Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
+
+//Products
+Route::resource('products', ProductController::class)->except(['create', 'edit']);
+
+
+//Orders
+Route::resource('orders', OrderController::class)->except(['create', 'edit']);

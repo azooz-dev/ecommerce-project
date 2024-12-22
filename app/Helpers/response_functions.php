@@ -38,3 +38,10 @@ if (!function_exists('showOne')) {
     return successResponse($model, $message, $status);
   }
 }
+
+if (!function_exists('showMessage')) {
+  function showMessage($message, $status = 200): JsonResponse
+  {
+    return successResponse($message, $message, $status);
+  }
+}
