@@ -8,8 +8,8 @@ if (!function_exists('successResponse')) {
   function successResponse($data, $message = 'Success', $status = 200): JsonResponse
   {
     return response()->json([
-      'message' => $message,
       'data' => $data,
+      'message' => $message,
       'status' => 'success'
     ], $status);
   }

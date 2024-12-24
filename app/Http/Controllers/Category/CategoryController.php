@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Category;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Category\CategoryStoreRequest;
+use App\Http\Requests\Category\CategoryUpdateRequest;
+use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
 use Exception;
 
@@ -21,6 +24,7 @@ class CategoryController extends Controller
     {
         try {
             $categories = Category::all();
+            $categories = CategoryResource::collection($categories);
 
             return showAll($categories, 200);
         } catch (\Exception $e) {
@@ -31,9 +35,19 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryStoreRequest $request)
     {
-        //
+        try {
+            $data = $request->validated();
+
+            $category = Category::create($data);
+
+            $category = new CategoryResource($category);
+
+            return showOne($category, 200);
+        } catch (Exception $e) {
+            return errorResponse($e->getMessage(), 500);
+        }
     }
 
     /**
@@ -42,6 +56,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         try {
+            $category = new CategoryResource($category);
             return showOne($category, 200);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
@@ -51,16 +66,36 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CategoryUpdateRequest $request, Category $category)
     {
-        //
+        try {
+            $data = $request->validated();
+
+            $category = $category->fill($data);
+            if (!$category->isDirty()) {
+                return errorResponse('يجب تغيير قيمة واحدة على الأقل', 422);
+            }
+
+            $category->save();
+            $category = new CategoryResource($category);
+
+            return showOne($category);
+        } catch (Exception $e) {
+            return errorResponse($e->getMessage(), 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
-        //
+        try {
+            $category->delete();
+
+            return showOne(new CategoryResource($category));
+        } catch (Exception $e) {
+            return errorResponse($e->getMessage(), 500);
+        }
     }
 }
