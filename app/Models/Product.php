@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Category;
+use App\Models\ProductImage;
+use App\Models\ProductSize;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,5 +28,20 @@ class Product extends Model
     public function isAvailable()
     {
         return $this->status == self::AVAILABLE_PRODUCT;
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function productImages()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function productSizes()
+    {
+        return $this->hasMany(ProductSize::class);
     }
 }

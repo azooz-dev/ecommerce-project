@@ -2,16 +2,16 @@
 
 namespace App\Http\Requests\Product;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Product\BaseProductRequest;
 
-class ProductStoreRequest extends FormRequest
+class ProductStoreRequest extends BaseProductRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,10 @@ class ProductStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        return array_merge($this->commonRules(), [
+            'productImages' => 'required|min:1',
+            'productImages.*' => 'required|image|mime:jpeg,png,jpg,gif,svg|max:2048',
+            'productSizes' => 'required|min:1',
+        ]);
     }
 }

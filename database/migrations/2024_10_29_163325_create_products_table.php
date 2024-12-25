@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->decimal('price_discount', 10, 2)->nullable();
             $table->foreignId('category_id')->references('id')->on('categories');
-            $table->enum('status', [Product::AVAILABLE_PRODUCT, Product::UNAVAILABLE_PRODUCT])->default(Product::UNAVAILABLE_PRODUCT);
+            $table->enum('status', [Product::AVAILABLE_PRODUCT, Product::UNAVAILABLE_PRODUCT])->default(Product::AVAILABLE_PRODUCT);
             $table->timestamps();
         });
     }

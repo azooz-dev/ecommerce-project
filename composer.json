@@ -27,7 +27,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files":[ 
-            "app/Helpers/response_functions.php"
+            "app/Helpers/response_functions.php",
+            "app/Helpers/upload_file.php"
         ]
     },
     "autoload-dev": {
