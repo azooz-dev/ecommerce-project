@@ -2,8 +2,18 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
+
+use function App\Helpers\errorResponse;
 
 class Handler extends ExceptionHandler
 {
@@ -41,8 +51,39 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
+        $this->renderable(function (Throwable $e, $request) {
             //
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        switch (true) {
+            case $exception instanceof ValidationException:
+                $errors = $exception->errors();
+                return errorResponse($errors, 422);
+
+            case $exception instanceof ModelNotFoundException:
+                $modelName = strtolower(class_basename($exception->getModel()));
+                return errorResponse('Does not exists any ' . $modelName . ' with the specified identification', 404);
+
+            case $exception instanceof AuthenticationException:
+                return errorResponse('Unauthenticated', 401);
+
+            case $exception instanceof AuthorizationException:
+                return errorResponse($exception->getMessage(), 403);
+
+            case $exception instanceof NotFoundHttpException:
+                return errorResponse("The specified URL cannot be found.", 404);
+
+            case $exception instanceof MethodNotAllowedHttpException:
+                return errorResponse("The specified method for the request invalid.", 405);
+
+            case $exception instanceof HttpException:
+                return errorResponse($exception->getMessage(), $exception->getStatusCode());
+
+            default:
+                return parent::render($request, $exception);
+        }
     }
 }
