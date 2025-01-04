@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Order;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->decimal('total_amount');
             $table->string('payment_method');
             $table->string('address');
-            $table->enum('status', ['1', '0']);
+            $table->enum('status', [Order::PENDING_ORDER, Order::COMPLETED_ORDER])->default(Order::PENDING_ORDER);
             $table->timestamps();
         });
     }

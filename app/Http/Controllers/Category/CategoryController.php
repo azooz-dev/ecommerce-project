@@ -14,6 +14,7 @@ use function App\Helpers\showAll;
 use function App\Helpers\showOne;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -40,11 +41,13 @@ class CategoryController extends Controller
         try {
             $data = $request->validated();
 
+            $data['slug'] = Str::slug($data['name']);
+
             $category = Category::create($data);
 
             $category = new CategoryResource($category);
 
-            return showOne($category, 200);
+            return showOne($category, 201);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
         }

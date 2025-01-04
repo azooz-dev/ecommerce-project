@@ -20,9 +20,9 @@ class OrderFactory extends Factory
         return [
             'order_number' => fake()->uuid(),
             'total_amount' => fake()->randomFloat(2, 2, 2),
-            'payment_method' => fake()->randomElement(['cash', 'card']),
+            'payment_method' => fake()->randomElement(['كاش', 'بطاقة']),
             'address' => fake()->address(),
-            'status' => fake()->randomElement(['1', '0']),
+            'status' => fake()->randomElement(['قيد الإنتظار', 'مكتمل']),
             'user_id' => User::factory(),
         ];
     }

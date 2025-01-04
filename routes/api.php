@@ -2,9 +2,12 @@
 
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Order\OrderController;
+use App\Http\Controllers\Order\OrderItems\OrderItemController;
 use App\Http\Controllers\Product\ProductController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+
+
 
 
 
@@ -26,9 +29,12 @@ use Illuminate\Support\Facades\Route;
 // Categories
 Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
 
-//Products
+// Products
 Route::resource('products', ProductController::class)->except(['create', 'edit']);
 
 
-//Orders
+// Orders
 Route::resource('orders', OrderController::class)->except(['create', 'edit']);
+
+// Order Items
+Route::resource('orders.orderItems', OrderItemController::class)->except(['create', 'edit', 'show']);

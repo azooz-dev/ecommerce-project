@@ -15,11 +15,12 @@ class CategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'identifier' => (int) $this->id,
-            'title' => (string) $this->name,
-            'details' => (string) $this->description,
+            'identifier'  => (int) $this->id,
+            'title'       => (string) $this->name,
+            'slug'        => (string) $this->slug,
+            'details'     => (string) $this->description,
             'createdDate' => (string) $this->created_at,
-            'lastChange' => (string) $this->updated_at,
+            'lastChange'  => (string) $this->updated_at,
             'deletedDate' => isset($this->deleted_at) ? (string) $this->deleted_at : null,
         ];
     }
@@ -27,10 +28,11 @@ class CategoryResource extends JsonResource
     public static function transformAttribute($index)
     {
         $attribute = [
-            'title' => 'name',
-            'details' => 'description',
+            'title'       => 'name',
+            'slug'        => 'slug',
+            'details'     => 'description',
             'createdDate' => 'created_at',
-            'lastChange' => 'updated_at',
+            'lastChange'  => 'updated_at',
             'deletedDate' => 'deleted_at',
         ];
         return isset($attribute[$index]) ? $attribute[$index] : null;

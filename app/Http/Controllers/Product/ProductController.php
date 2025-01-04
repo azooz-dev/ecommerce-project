@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\ProductStoreRequest;
 use App\Http\Requests\Product\ProductUpdateRequest;
 use App\Http\Resources\Product\ProductResource;
+use App\Models\Product;
+use Exception;
 use function App\Helpers\errorResponse;
 use function App\Helpers\showAll;
 use function App\Helpers\uploadFile;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Product;
-use Exception;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -38,10 +39,12 @@ class ProductController extends Controller
     public function store(ProductStoreRequest $request)
     {
         $data = $request->validated();
+        $data['slug'] = Str::slug($data['name']);
 
         try {
             $product = Product::create([
                 'name' => $data['name'],
+                'slug' => $data['slug'],
                 'description' => $data['description'],
                 'price' => $data['price'],
                 'price_discount' => isset($data['price_discount']) ? $data['price_discount'] : null,
@@ -88,6 +91,11 @@ class ProductController extends Controller
 
             if ($request->has('category_id')) {
                 $product->category_id = $data['category_id'];
+            }
+
+            if ($request->has('name')) {
+                $product->name = $data['name'];
+                $product->slug = Str::slug($data['name']);
             }
 
             if ($request->has('productImages')) {
