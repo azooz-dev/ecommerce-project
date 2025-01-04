@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Category\CategoryController;
+use App\Http\Controllers\Favorite\UserFavoriteController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\OrderItems\OrderItemController;
 use App\Http\Controllers\Product\ProductController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -38,3 +40,6 @@ Route::resource('orders', OrderController::class)->except(['create', 'edit']);
 
 // Order Items
 Route::resource('orders.orderItems', OrderItemController::class)->except(['create', 'edit', 'show']);
+
+// Favorites
+Route::resource('users.favorites', UserFavoriteController::class)->except(['create', 'edit', 'show', 'update']);
