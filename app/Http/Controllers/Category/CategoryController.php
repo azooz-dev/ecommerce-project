@@ -5,30 +5,32 @@ namespace App\Http\Controllers\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CategoryStoreRequest;
 use App\Http\Requests\Category\CategoryUpdateRequest;
-use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
+use App\Services\Category\CategoryService;
 use Exception;
 
 use function App\Helpers\errorResponse;
 use function App\Helpers\showAll;
 use function App\Helpers\showOne;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-
 class CategoryController extends Controller
 {
+    public function __construct(private CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         try {
-            $categories = Category::all();
-            $categories = CategoryResource::collection($categories);
+            $categories = $this->categoryService->index();
 
             return showAll($categories, 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
         }
     }
@@ -41,11 +43,7 @@ class CategoryController extends Controller
         try {
             $data = $request->validated();
 
-            $data['slug'] = Str::slug($data['name']);
-
-            $category = Category::create($data);
-
-            $category = new CategoryResource($category);
+            $category = $this->categoryService->create($data);
 
             return showOne($category, 201);
         } catch (Exception $e) {
@@ -59,7 +57,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         try {
-            $category = new CategoryResource($category);
+            $category = $this->categoryService->show($category);
             return showOne($category, 200);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
@@ -74,13 +72,7 @@ class CategoryController extends Controller
         try {
             $data = $request->validated();
 
-            $category = $category->fill($data);
-            if (!$category->isDirty()) {
-                return errorResponse('يجب تغيير قيمة واحدة على الأقل', 422);
-            }
-
-            $category->save();
-            $category = new CategoryResource($category);
+            $category = $this->categoryService->update($category, $data);
 
             return showOne($category);
         } catch (Exception $e) {
@@ -94,9 +86,9 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         try {
-            $category->delete();
+            $category = $this->categoryService->destroy($category);
 
-            return showOne(new CategoryResource($category));
+            return showOne($category);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
         }

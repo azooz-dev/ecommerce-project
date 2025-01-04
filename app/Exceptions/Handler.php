@@ -82,6 +82,9 @@ class Handler extends ExceptionHandler
             case $exception instanceof HttpException:
                 return errorResponse($exception->getMessage(), $exception->getStatusCode());
 
+            case $exception->getCode() === 23000 && str_contains($exception->getMessage(), 'Integrity constraint violation'):
+                return errorResponse('Cannot delete or update a parent row: a foreign key constraint fails.', 409);
+
             default:
                 return parent::render($request, $exception);
         }
