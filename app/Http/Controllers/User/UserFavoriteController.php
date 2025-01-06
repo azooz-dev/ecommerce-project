@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Favorite;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Favorite\FavoriteStoreRequest;
 use App\Http\Resources\Favorite\FavoriteResource;
-use App\Models\Product;
 
 use App\Models\User;
 use Exception;

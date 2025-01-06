@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Category\CategoryController;
-use App\Http\Controllers\Favorite\UserFavoriteController;
+use App\Http\Controllers\User\UserFavoriteController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\OrderItems\OrderItemController;
 use App\Http\Controllers\Product\ProductController;
