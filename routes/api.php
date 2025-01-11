@@ -5,6 +5,7 @@ use App\Http\Controllers\User\UserFavoriteController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\OrderItems\OrderItemController;
 use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -43,3 +44,8 @@ Route::resource('orders.orderItems', OrderItemController::class)->except(['creat
 
 // Favorites
 Route::resource('users.favorites', UserFavoriteController::class)->except(['create', 'edit', 'show', 'update']);
+
+// Users
+Route::resource('users', UserController::class)->except(['create', 'edit']);
+Route::get('users/verify/{token}', [UserController::class, 'verify'])->name('users.verify');
+Route::get('users/{user}/resend', [UserController::class, 'resendEmail'])->name('users.resend');
