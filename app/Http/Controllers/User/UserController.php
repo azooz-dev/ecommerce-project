@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Events\UserVerifyEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
@@ -17,6 +16,12 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -28,27 +33,6 @@ class UserController extends Controller
             $users = UserResource::collection($users);
 
             return showAll($users, 200);
-        } catch (Exception $e) {
-            return errorResponse($e->getMessage(), 500);
-        }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(UserStoreRequest $request)
-    {
-        $data = $request->validated();
-        try {
-            $data['password'] = Hash::make($data['password']);
-            $data['verified'] = User::UNVERIFIED_USER;
-            $data['verification_token'] = User::generatedTokenString();
-
-            $user = User::create($data);
-
-            event(new UserVerifyEvent($user));
-
-            return showOne(new UserResource($user), 201);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
         }

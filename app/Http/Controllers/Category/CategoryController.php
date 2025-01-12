@@ -13,11 +13,16 @@ use function App\Helpers\errorResponse;
 use function App\Helpers\showAll;
 use function App\Helpers\showOne;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['index', 'show']);
+    }
+
+
     /**
      * Display a listing of the resource.
      */
