@@ -76,4 +76,9 @@ class User extends Authenticatable
     {
         return Str::random(40);
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

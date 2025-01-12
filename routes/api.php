@@ -6,6 +6,7 @@ use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\OrderItems\OrderItemController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\UserOrderController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -49,3 +50,6 @@ Route::resource('users.favorites', UserFavoriteController::class)->except(['crea
 Route::resource('users', UserController::class)->except(['create', 'edit']);
 Route::get('users/verify/{token}', [UserController::class, 'verify'])->name('users.verify');
 Route::get('users/{user}/resend', [UserController::class, 'resendEmail'])->name('users.resend');
+
+// Users Orders
+Route::resource('users.orders', UserOrderController::class)->only('index');
