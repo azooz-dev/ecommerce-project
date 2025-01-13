@@ -9,8 +9,10 @@ use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\Request;
 
 use function App\Helpers\errorResponse;
+use function App\Helpers\showMessage;
 use function App\Helpers\showOne;
 use Illuminate\Support\Facades\Hash;
 
@@ -52,6 +54,19 @@ class AuthController extends Controller
                 $token = $user->createToken('personal_token')->plainTextToken;
 
                 return showOne(['user' => new UserResource($user), 'token' => $token], 200);
+            }
+        } catch (Exception $e) {
+            return errorResponse($e->getMessage(), 500);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+            if ($request->user()->currentAccessToken()->delete()) {
+                return showMessage('تم تسجيل الخروج بنجاح', 200);
+            } else {
+                return errorResponse('حدث خطأ أثناء تسجيل الخروج', 500);
             }
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
