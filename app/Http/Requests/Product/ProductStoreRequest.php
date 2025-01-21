@@ -23,7 +23,7 @@ class ProductStoreRequest extends BaseProductRequest
     {
         return array_merge($this->commonRules(), [
             'productImages' => 'required|min:1',
-            'productImages.*' => 'required|image|mime:jpeg,png,jpg,gif,svg|max:2048',
+            'productImages.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'productSizes' => 'required|min:1',
         ]);
     }

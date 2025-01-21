@@ -47,7 +47,7 @@ abstract class BaseOrderRequest extends BaseRequest
             'address'        => 'shipping_address',
             'status'         => 'status',
             'order_items'    => 'orderItems',
-            'user_id'        => 'user_id'
+            'user_id'        => 'user'
         ];
     }
 
@@ -61,7 +61,7 @@ abstract class BaseOrderRequest extends BaseRequest
             'shipping_address' => 'address',
             'status'           => 'status',
             'orderItems'       => 'order_items',
-            'user_id'          => 'user_id'
+            'user'             => 'user_id'
         ];
         return isset($attribute[$index]) ? $attribute[$index] : null;
     }

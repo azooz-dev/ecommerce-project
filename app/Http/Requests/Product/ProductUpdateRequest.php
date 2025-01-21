@@ -23,7 +23,7 @@ class ProductUpdateRequest extends BaseProductRequest
     {
         return array_merge($this->commonRules(), [
             'productImages' => 'nullable|array|min:1',
-            'productImages.*' => 'nullable|image|mime:jpeg,png,jpg,gif,svg|max:2048',
+            'productImages.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'productSizes' => 'nullable|array|min:1',
             'quantity' => 'sometimes|integer',
         ]);

@@ -15,7 +15,6 @@ class Order extends Model
 
     protected $fillable = [
         'order_number',
-        'total_amount',
         'payment_method',
         'address',
         'status',
@@ -65,10 +64,8 @@ class Order extends Model
         $this->total_amount = 0;
         // Calculate the total amount by summing up each order item's total
         $this->total_amount = $this->orderItems->sum(function ($orderItem) {
-            if ($orderItem->discount_price && $orderItem->discount_price > 0) {
-                return $orderItem->quantity * $orderItem->discount_price;
-            } else {
-                return $orderItem->quantity * $orderItem->price;
+            if ($orderItem->price && $orderItem->price > 0) {
+                return $orderItem->price;
             }
         });
     }

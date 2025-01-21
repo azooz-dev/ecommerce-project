@@ -9,11 +9,12 @@ use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Exception;
-use Illuminate\Http\Request;
-
 use function App\Helpers\errorResponse;
+
 use function App\Helpers\showMessage;
 use function App\Helpers\showOne;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -46,15 +47,21 @@ class AuthController extends Controller
         $data = $request->validated();
 
         try {
-            if (!auth()->attempt($data)) {
-                return errorResponse('بيانات الدخول غير صحيحة', 401);
-            } else {
+            if (Auth::attempt($data)) {
+                $user = User::where('email', $data['email'])->first();
 
-                $user = auth()->user();
-                $token = $user->createToken('personal_token')->plainTextToken;
+                if ($user->role === User::ADMIN_USER) {
+                    $token = $user->createToken('admin-token', ['view', 'create', 'update', 'delete'])->plainTextToken;
+                } else {
+                    $token = $user->createToken('regular-token', ['view'])->plainTextToken;
+                }
+
+                $user->token = $token;
 
                 return showOne(['user' => new UserResource($user), 'token' => $token], 200);
             }
+
+            return errorResponse('بيانات الدخول غير صحيحة', 401);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
         }

@@ -5,22 +5,21 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\ProductStoreRequest;
 use App\Http\Requests\Product\ProductUpdateRequest;
-use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
+use App\Services\Product\ProductService;
 use Exception;
 use function App\Helpers\errorResponse;
 use function App\Helpers\showAll;
-use function App\Helpers\uploadFile;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    public function __construct()
+    protected $productService;
+
+    public function __construct(ProductService $productService)
     {
         $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->productService = $productService;
     }
-
 
     /**
      * Display a listing of the resource.
@@ -28,11 +27,8 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $products = Product::with('category')
-                ->with('productImages')
-                ->with('productSizes')->get();
+            $products = $this->productService->index();
 
-            $products = ProductResource::collection($products);
             return showAll($products, 'products', 200);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
@@ -45,29 +41,11 @@ class ProductController extends Controller
     public function store(ProductStoreRequest $request)
     {
         $data = $request->validated();
-        $data['slug'] = Str::slug($data['name']);
 
         try {
-            $product = Product::create([
-                'name' => $data['name'],
-                'slug' => $data['slug'],
-                'description' => $data['description'],
-                'price' => $data['price'],
-                'price_discount' => isset($data['price_discount']) ? $data['price_discount'] : null,
-                'quantity' => $data['quantity'],
-                'category_id' => $data['category_id'],
-                'status' => Product::AVAILABLE_PRODUCT,
-            ]);
+            $product = $this->productService->create($data);
 
-            if ($request->has('productImages')) {
-                $this->handleProductImages($product, $data['productImages']);
-            }
-
-            if (isset($data['productSizes'])) {
-                $this->handleProductSizes($product, $data['productSizes']);
-            }
-
-            return showAll(new ProductResource($product), 'product', 201);
+            return showAll($product, 'product', 201);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
         }
@@ -79,7 +57,8 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         try {
-            $product = new ProductResource($product);
+            $product = $this->productService->show($product);
+
             return showAll($product, 'product', 200);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
@@ -94,32 +73,7 @@ class ProductController extends Controller
         $data = $request->validated();
 
         try {
-
-            if ($request->has('category_id')) {
-                $product->category_id = $data['category_id'];
-            }
-
-            if ($request->has('name')) {
-                $product->name = $data['name'];
-                $product->slug = Str::slug($data['name']);
-            }
-
-            if ($request->has('productImages')) {
-                $this->deleteProductImages($product);
-                $this->handleProductImages($product, $data['productImages']);
-            }
-
-            if (isset($data['productSizes'])) {
-                $this->handleProductSizes($product, $data['productSizes']);
-            }
-
-            if ($request->has('status')) {
-                $product->status = $data['status'];
-            }
-
-            $product->update($data);
-
-            $product = new ProductResource($product);
+            $product = $this->productService->update($product, $data);
 
             return showAll($product, 'product', 200);
         } catch (Exception $e) {
@@ -133,60 +87,11 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         try {
-            $this->deleteProductImages($product);
-            $product->productImages()->delete();
-            $product->productSizes()->delete();
+            $product = $this->productService->destroy($product);
 
-            $product->delete();
-            return showAll(new ProductResource($product), 'product', 200);
+            return showAll($product, 'product', 200);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
-        }
-    }
-
-    private function handleProductImages($product, $productImages)
-    {
-        if (is_array($productImages)) {
-            foreach ($productImages as $image) {
-                $imageName = uploadFile($image, 'product_images', 'public');
-                $product->productImages()->create([
-                    'image_name' => $imageName,
-                    'alt_text' => isset($image['alt_text']) ? $image['alt_text'] : null
-                ]);
-            }
-        } else {
-            $imageName = uploadFile($productImages, 'product_images', 'public');
-            $product->productImages()->create([
-                'image_name' => $imageName,
-                'alt_text' => isset($image['alt_text']) ? $image['alt_text'] : null
-            ]);
-        }
-    }
-
-    private function handleProductSizes($product, $sizes)
-    {
-        if (str_contains($sizes, ',')) {
-            $sizes = explode(',', $sizes);
-            $sizes = array_map(function ($size) {
-                return ['size_product' => $size];
-            }, $sizes);
-            $product->productSizes()->createMany($sizes);
-        } else {
-            $product->productSizes()->create([
-                'size_product' => $sizes,
-            ]);
-        }
-    }
-
-    private function deleteProductImages($product)
-    {
-        if (isset($product->productImages)) {
-            foreach ($product->productImages as $image) {
-                if (Storage::exists('product_images/' . $image->image_name)) {
-                    Storage::delete('product_images/' . $image->image_name);
-                }
-                $image->delete();
-            }
         }
     }
 }
