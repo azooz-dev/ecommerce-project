@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Category\CategoryController;
+use App\Http\Controllers\Coupon\CouponController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\OrderItems\OrderItemController;
 use App\Http\Controllers\Product\ProductController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\UserFavoriteController;
 use App\Http\Controllers\User\UserOrderController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -38,6 +40,8 @@ Route::resource('categories', CategoryController::class)->except(['create', 'edi
 // Products
 Route::resource('products', ProductController::class)->except(['create', 'edit']);
 
+// Coupons
+Route::resource('coupons', CouponController::class)->except(['create', 'edit']);
 
 // Orders
 Route::resource('orders', OrderController::class)->except(['create', 'edit']);

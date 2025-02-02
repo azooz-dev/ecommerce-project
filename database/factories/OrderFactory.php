@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Coupon;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,6 +25,7 @@ class OrderFactory extends Factory
             'address' => fake()->address(),
             'status' => fake()->randomElement(['قيد الإنتظار', 'مكتمل']),
             'user_id' => User::factory(),
+            'coupon_id' => Coupon::factory(),
         ];
     }
 }

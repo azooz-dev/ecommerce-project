@@ -20,7 +20,7 @@ class OrderItemRepository
 
     public function create(array $data, Order $order)
     {
-        if ($order->status == Order::COMPLETED_ORDER) {
+        if ($order->status == Order::COMPLETED_ORDER || $order->status == Order::CANCELED_ORDER) {
             throw new HttpException(409, 'لقد تم اكتمال الطلب بالفعل مسبقاً');
         }
 
@@ -49,7 +49,7 @@ class OrderItemRepository
 
     public function destroy(Order $order, OrderItem $orderItem)
     {
-        if ($order->status == Order::COMPLETED_ORDER) {
+        if ($order->status == Order::COMPLETED_ORDER || $order->status == Order::CANCELED_ORDER) {
             throw new HttpException(409, 'لا يمكن حذف الطلب بعد اكتماله');
         }
 

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Category;
+use App\Models\Coupon;
 use App\Models\Favorite;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -28,5 +29,6 @@ class DatabaseSeeder extends Seeder
         ProductImage::factory(1000)->create();
         ProductSize::factory(1000)->create();
         OrderItem::factory(150)->create();
+        Coupon::factory(30)->create();
     }
 }

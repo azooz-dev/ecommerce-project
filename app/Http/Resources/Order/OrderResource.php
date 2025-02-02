@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Http\Resources\Coupon\CouponResource;
 use App\Http\Resources\Order\OrderItems\OrderItemsResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,6 +22,7 @@ class OrderResource extends JsonResource
             'total_cost'       => (string) $this->total_amount,
             'payment_type'     => (string) $this->payment_method,
             'shipping_address' => (string) $this->address,
+            'coupon'           => isset($this->coupon) ? new CouponResource($this->coupon) : null,
             'status'           => (string) $this->status,
             'user'             => $this->user,
             'orderItems'       =>  OrderItemsResource::collection($this->orderItems),

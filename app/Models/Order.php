@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Coupon;
+use App\Models\OrderItem;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class Order extends Model
 {
@@ -12,6 +14,7 @@ class Order extends Model
 
     const PENDING_ORDER = 'قيد الإنتظار';
     const COMPLETED_ORDER = 'مكتمل';
+    const CANCELED_ORDER = 'ملغي';
 
     protected $fillable = [
         'order_number',
@@ -19,6 +22,7 @@ class Order extends Model
         'address',
         'status',
         'user_id',
+        'coupon_id',
     ];
 
     protected $attributes = [
@@ -68,5 +72,15 @@ class Order extends Model
                 return $orderItem->price;
             }
         });
+
+        // Apply the coupon discount if it exists
+        if ($this->coupon) {
+            $this->total_amount -= ($this->total_amount * ($this->coupon->discount / 100));
+        }
+    }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
     }
 }

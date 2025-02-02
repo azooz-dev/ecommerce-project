@@ -37,6 +37,7 @@ class OrderRepository
                     'user_id' => $data['user_id'],
                     'address' => $data['address'],
                     'payment_method' => $data['payment_method'],
+                    'coupon_id' => isset($data['coupon_id']) ? $data['coupon_id'] : null,
                 ]);
 
                 $order->save();
@@ -48,7 +49,7 @@ class OrderRepository
 
     public function update(array $data, Order $order)
     {
-        if ($order->status == Order::COMPLETED_ORDER) {
+        if ($order->status == Order::COMPLETED_ORDER || $order->status == Order::CANCELED_ORDER) {
             throw new HttpException(409, 'لقد تم اكتمال الطلب بالفعل مسبقاً');
         }
 

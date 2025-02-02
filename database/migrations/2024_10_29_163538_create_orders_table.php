@@ -15,11 +15,12 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('coupon_id')->references('id')->on('coupons')->nullable();
             $table->string('order_number');
             $table->decimal('total_amount');
             $table->string('payment_method');
             $table->string('address');
-            $table->enum('status', [Order::PENDING_ORDER, Order::COMPLETED_ORDER])->default(Order::PENDING_ORDER);
+            $table->enum('status', [Order::PENDING_ORDER, Order::COMPLETED_ORDER, Order::CANCELED_ORDER])->default(Order::PENDING_ORDER);
             $table->timestamps();
         });
     }

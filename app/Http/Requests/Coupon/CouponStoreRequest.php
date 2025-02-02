@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Order;
+namespace App\Http\Requests\Coupon;
 
-use App\Http\Requests\Order\BaseOrderRequest;
-use App\Models\Order;
+use App\Models\Coupon;
 
-
-class OrderStoreRequest extends BaseOrderRequest
+class CouponStoreRequest extends BaseCouponRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +22,10 @@ class OrderStoreRequest extends BaseOrderRequest
     public function rules(): array
     {
         return [
-            'payment_method' => 'required|string',
-            'address'        => 'required|string',
-            'user_id'        => 'required|exists:users,id',
-            'coupon_id'      => 'nullable|exists:coupons,id',
+            'name'            => 'required|string|max:255',
+            'coupon_validity' => 'required|date|after:today',
+            'discount'        => 'required|numeric|min:0|max:100',
+            'status'          => 'required|in:' . Coupon::ACTIVE_COUPON . ',' . Coupon::INACTIVE_COUPON
         ];
     }
 }
