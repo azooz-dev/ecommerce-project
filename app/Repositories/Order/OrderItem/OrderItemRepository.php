@@ -13,7 +13,7 @@ class OrderItemRepository
 {
     public function index(Order $order)
     {
-        $orderItems = $order->orderItems()->get();
+        $orderItems = $order->orderItems()->latest()->get();
 
         return $orderItems;
     }

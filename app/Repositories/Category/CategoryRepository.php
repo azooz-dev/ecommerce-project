@@ -4,13 +4,12 @@ namespace App\Repositories\Category;
 
 use App\Models\Category;
 
-use function App\Helpers\errorResponse;
 
 class CategoryRepository
 {
     public function index()
     {
-        return Category::all();
+        return Category::latest()->get();
     }
 
     public function show(Category $category)

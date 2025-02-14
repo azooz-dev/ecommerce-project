@@ -12,7 +12,7 @@ class OrderItemPolicy
      */
     public function view(User $user, OrderItem $orderItem): bool
     {
-        return $user->id == $orderItem->order->user_id && $user->tokenCan('view');
+        return $user->id == $orderItem->order->user_id || $user->isAdmin();
     }
 
     /**

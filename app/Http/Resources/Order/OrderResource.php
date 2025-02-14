@@ -33,7 +33,7 @@ class OrderResource extends JsonResource
     }
 
 
-    public function transformAttribute($index)
+    public static function transformAttribute($index)
     {
         $attribute = [
             'identifier'       => 'id',

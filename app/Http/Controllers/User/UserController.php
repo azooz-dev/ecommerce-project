@@ -27,14 +27,16 @@ class UserController extends Controller
      */
     public function index()
     {
-        try {
-            $users = User::all();
+        if ($this->authorize('viewAny', User::class)) {
+            try {
+                $users = User::latest()->get();
 
-            $users = UserResource::collection($users);
+                $users = UserResource::collection($users);
 
-            return showAll($users, 200);
-        } catch (Exception $e) {
-            return errorResponse($e->getMessage(), 500);
+                return showAll($users, 200);
+            } catch (Exception $e) {
+                return errorResponse($e->getMessage(), 500);
+            }
         }
     }
 
@@ -43,10 +45,12 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        try {
-            return showOne(new UserResource($user), 200);
-        } catch (Exception $e) {
-            return errorResponse($e->getMessage(), 500);
+        if ($this->authorize('view', $user)) {
+            try {
+                return showOne(new UserResource($user), 200);
+            } catch (Exception $e) {
+                return errorResponse($e->getMessage(), 500);
+            }
         }
     }
 
@@ -57,42 +61,45 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        try {
-            if (isset($data['role'])) {
-                if (!$user->isVerified()) {
-                    return errorResponse('Your account is not verified', 409);
+        if ($this->authorize('update', $user)) {
+
+            try {
+                if (isset($data['role'])) {
+                    if (!$user->isVerified()) {
+                        return errorResponse('Your account is not verified', 409);
+                    }
+                    $user->role = $data['role'];
                 }
-                $user->role = $data['role'];
+
+                $user->fill(array_filter([
+                    'first_name' => $data['first_name'] ?? null,
+                    'last_name'  => $data['last_name'] ?? null,
+                    'password'   => isset($data['password']) ? Hash::make($data['password']) : null,
+                    'phone'      => $data['phone'] ?? null,
+                ]));
+
+
+
+                if (isset($data['email']) && $user->email !== $data['email']) {
+                    $user->fill([
+                        'email' => $data['email'],
+                        'verified' => User::UNVERIFIED_USER,
+                        'verification_token' => User::generatedTokenString(),
+                    ]);
+
+                    event(new UserVerifyEvent($user));
+                }
+
+                if ($user->isClean()) {
+                    return errorResponse('You need to specify a different value to update', 422);
+                }
+
+                $user->save();
+
+                return showOne(new UserResource($user), 200);
+            } catch (Exception $e) {
+                return errorResponse($e->getMessage(), 500);
             }
-
-            $user->fill(array_filter([
-                'first_name' => $data['first_name'] ?? null,
-                'last_name'  => $data['last_name'] ?? null,
-                'password'   => isset($data['password']) ? Hash::make($data['password']) : null,
-                'phone'      => $data['phone'] ?? null,
-            ]));
-
-
-
-            if (isset($data['email']) && $user->email !== $data['email']) {
-                $user->fill([
-                    'email' => $data['email'],
-                    'verified' => User::UNVERIFIED_USER,
-                    'verification_token' => User::generatedTokenString(),
-                ]);
-
-                event(new UserVerifyEvent($user));
-            }
-
-            if ($user->isClean()) {
-                return errorResponse('You need to specify a different value to update', 422);
-            }
-
-            $user->save();
-
-            return showOne(new UserResource($user), 200);
-        } catch (Exception $e) {
-            return errorResponse($e->getMessage(), 500);
         }
     }
 
@@ -101,12 +108,14 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        try {
-            $user->delete();
+        if ($this->authorize('delete', $user)) {
+            try {
+                $user->delete();
 
-            return showOne(new UserResource($user), 200);
-        } catch (Exception $e) {
-            return errorResponse($e->getMessage(), 500);
+                return showOne(new UserResource($user), 200);
+            } catch (Exception $e) {
+                return errorResponse($e->getMessage(), 500);
+            }
         }
     }
 

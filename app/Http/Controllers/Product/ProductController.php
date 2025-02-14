@@ -42,12 +42,14 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
-        try {
-            $product = $this->productService->create($data);
+        if ($this->authorize('create', Product::class)) {
+            try {
+                $product = $this->productService->create($data);
 
-            return showAll($product, 'product', 201);
-        } catch (Exception $e) {
-            return errorResponse($e->getMessage(), 500);
+                return showAll($product, 'product', 201);
+            } catch (Exception $e) {
+                return errorResponse($e->getMessage(), 500);
+            }
         }
     }
 
@@ -72,12 +74,14 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
-        try {
-            $product = $this->productService->update($product, $data);
+        if ($this->authorize('update', $product)) {
+            try {
+                $product = $this->productService->update($product, $data);
 
-            return showAll($product, 'product', 200);
-        } catch (Exception $e) {
-            return errorResponse($e->getMessage(), 500);
+                return showAll($product, 'product', 200);
+            } catch (Exception $e) {
+                return errorResponse($e->getMessage(), 500);
+            }
         }
     }
 
@@ -86,12 +90,14 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        try {
-            $product = $this->productService->destroy($product);
+        if ($this->authorize('delete', $product)) {
+            try {
+                $product = $this->productService->destroy($product);
 
-            return showAll($product, 'product', 200);
-        } catch (Exception $e) {
-            return errorResponse($e->getMessage(), 500);
+                return showAll($product, 'product', 200);
+            } catch (Exception $e) {
+                return errorResponse($e->getMessage(), 500);
+            }
         }
     }
 }

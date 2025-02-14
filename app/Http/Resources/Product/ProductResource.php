@@ -43,7 +43,7 @@ class ProductResource extends JsonResource
             'stock'          => 'quantity',
             'situation'      => 'status',
             'price'          => 'price',
-            'category'       => 'category',
+            'category'       => 'category_id',
             'price discount' => 'price_discount',
             'pictures'       => 'productImages',
             'sizes'          => 'productSizes',

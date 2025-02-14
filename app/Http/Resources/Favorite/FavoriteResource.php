@@ -21,4 +21,15 @@ class FavoriteResource extends JsonResource
             'user'       => $this->user,
         ];
     }
+
+    public static function transformAttribute($index)
+    {
+        $attribute = [
+            'identifier' => 'id',
+            'product'    => 'product_id',
+            'user'       => 'user_id',
+        ];
+
+        return isset($attribute[$index]) ? $attribute[$index] : null;
+    }
 }

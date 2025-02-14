@@ -11,6 +11,7 @@ use App\Services\Order\OrderItem\OrderItemService;
 use Exception;
 use function App\Helpers\errorResponse;
 use function App\Helpers\showAll;
+use Illuminate\Support\Facades\Auth;
 
 class OrderItemController extends Controller
 {
@@ -28,7 +29,7 @@ class OrderItemController extends Controller
      */
     public function index(Order $order)
     {
-        if ($this->authorize('view', OrderItem::class)) {
+        if ($this->authorize('view', $order)) {
             try {
                 $orderItems = $this->orderItemService->index($order);
 
@@ -62,7 +63,7 @@ class OrderItemController extends Controller
      */
     public function destroy(Order $order, OrderItem $orderItem)
     {
-        if ($this->authorize('delete', OrderItem::class)) {
+        if ($this->authorize('delete', $orderItem)) {
             try {
                 $orderItems = $this->orderItemService->destroy($order, $orderItem);
 

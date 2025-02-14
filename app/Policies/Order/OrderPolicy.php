@@ -8,11 +8,19 @@ use App\Models\User;
 class OrderPolicy
 {
     /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->isAdmin() && $user->tokenCan('view');
+    }
+
+    /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user): bool
+    public function view(User $user, Order $order): bool
     {
-        return $user->isAdmin();
+        return $user->id === $order->user_id;
     }
 
     /**

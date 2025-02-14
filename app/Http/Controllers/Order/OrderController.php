@@ -27,7 +27,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        if ($this->authorize('view', Order::class)) {
+        if ($this->authorize('viewAny', Order::class)) {
             try {
                 $orders = $this->orderService->index();
 
@@ -60,12 +60,14 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        try {
-            $order = $this->orderService->show($order);
+        if ($this->authorize('view', $order)) {
+            try {
+                $order = $this->orderService->show($order);
 
-            return showOne($order, 200);
-        } catch (Exception $e) {
-            return errorResponse($e->getMessage(), 500);
+                return showOne($order, 200);
+            } catch (Exception $e) {
+                return errorResponse($e->getMessage(), 500);
+            }
         }
     }
 
@@ -74,7 +76,7 @@ class OrderController extends Controller
      */
     public function update(OrderUpdateRequest $request, Order $order)
     {
-        if ($this->authorize('update', Order::class)) {
+        if ($this->authorize('update', $order)) {
             $data = $request->validated();
             try {
                 $order = $this->orderService->update($data, $order);
@@ -91,7 +93,7 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        if ($this->authorize('delete', Order::class)) {
+        if ($this->authorize('delete', $order)) {
             try {
                 $order = $this->orderService->destroy($order);
 

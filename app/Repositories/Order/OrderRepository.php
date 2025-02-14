@@ -15,6 +15,7 @@ class OrderRepository
     {
         $orders = Order::with('user')
             ->with('orderItems')
+            ->latest()
             ->get();
 
         return $orders;

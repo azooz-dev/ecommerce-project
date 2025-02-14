@@ -7,10 +7,12 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\User;
 use App\Policies\Category\CategoryPolicy;
 use App\Policies\Order\OrderItem\OrderItemPolicy;
 use App\Policies\Order\OrderPolicy;
 use App\Policies\Product\ProductPolicy;
+use App\Policies\User\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -25,7 +27,8 @@ class AuthServiceProvider extends ServiceProvider
         Category::class => CategoryPolicy::class,
         Product::class => ProductPolicy::class,
         Order::class => OrderPolicy::class,
-        OrderItem::class => OrderItemPolicy::class
+        OrderItem::class => OrderItemPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**

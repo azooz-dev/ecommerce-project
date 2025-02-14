@@ -22,4 +22,17 @@ class CouponResource extends JsonResource
             'status'     => (string) $this->isActive() ? 'Active' : 'Inactive',
         ];
     }
+
+    public static function transformAttribute($index)
+    {
+        $attribute = [
+            'identifier' => 'id',
+            'code'       => 'name',
+            'validity'   => 'coupon_validity',
+            'discount'   => 'discount',
+            'status'     => 'status',
+        ];
+
+        return isset($attribute[$index]) ? $attribute[$index] : null;
+    }
 }

@@ -27,7 +27,6 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // if ($this->authorize('view', Category::class)) {
         try {
             $categories = $this->categoryService->index();
 
