@@ -66,7 +66,7 @@ class UserController extends Controller
             try {
                 if (isset($data['role'])) {
                     if (!$user->isVerified()) {
-                        return errorResponse('Your account is not verified', 409);
+                        return errorResponse(__('auth.your_account_is_not_verified'), 409);
                     }
                     $user->role = $data['role'];
                 }
@@ -91,7 +91,7 @@ class UserController extends Controller
                 }
 
                 if ($user->isClean()) {
-                    return errorResponse('You need to specify a different value to update', 422);
+                    return errorResponse(__('validation.nothing_to_update'), 422);
                 }
 
                 $user->save();
@@ -136,11 +136,11 @@ class UserController extends Controller
     public function resendEmail(User $user)
     {
         if ($user->isVerified()) {
-            return errorResponse('This user is already verified.', 409);
+            return errorResponse(__('auth.this_user_is_already_verified'), 409);
         }
 
         event(new UserVerifyEvent($user));
 
-        return showMessage('The verification email has been resend.', 200);
+        return showMessage(__('auth.the_verification_email_has_been_resend'), 200);
     }
 }

@@ -61,7 +61,7 @@ class AuthController extends Controller
                 return showOne(['user' => new UserResource($user), 'token' => $token], 200);
             }
 
-            return errorResponse('بيانات الدخول غير صحيحة', 401);
+            return errorResponse(__('auth.failed'), 401);
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);
         }
@@ -71,9 +71,9 @@ class AuthController extends Controller
     {
         try {
             if ($request->user()->currentAccessToken()->delete()) {
-                return showMessage('تم تسجيل الخروج بنجاح', 200);
+                return showMessage(__('auth.logged_out'), 200);
             } else {
-                return errorResponse('حدث خطأ أثناء تسجيل الخروج', 500);
+                return errorResponse(__('auth.failed_logged_out'), 500);
             }
         } catch (Exception $e) {
             return errorResponse($e->getMessage(), 500);

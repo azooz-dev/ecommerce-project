@@ -11,7 +11,6 @@ use App\Services\Order\OrderItem\OrderItemService;
 use Exception;
 use function App\Helpers\errorResponse;
 use function App\Helpers\showAll;
-use Illuminate\Support\Facades\Auth;
 
 class OrderItemController extends Controller
 {

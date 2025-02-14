@@ -65,25 +65,26 @@ class Handler extends ExceptionHandler
 
             case $exception instanceof ModelNotFoundException:
                 $modelName = strtolower(class_basename($exception->getModel()));
-                return errorResponse('Does not exists any ' . $modelName . ' with the specified identification', 404);
+                return errorResponse('لا يوجد أي ' . __('models.' . $modelName) . ' بالمعرف المحدد', 404);
 
             case $exception instanceof AuthenticationException:
-                return errorResponse('Unauthenticated', 401);
+                return errorResponse('غير مصدق', 401);
 
             case $exception instanceof AuthorizationException:
-                return errorResponse($exception->getMessage(), 403);
+                $message = $exception->getMessage();
+                return errorResponse(__('auth.' . $message, [], 'ar'), 403);
 
             case $exception instanceof NotFoundHttpException:
-                return errorResponse("The specified URL cannot be found.", 404);
+                return errorResponse("تعذر العثور على الرابط المحدد.", 404);
 
             case $exception instanceof MethodNotAllowedHttpException:
-                return errorResponse("The specified method for the request invalid.", 405);
+                return errorResponse("طريقة الطلب المحددة غير صالحة.", 405);
 
             case $exception instanceof HttpException:
                 return errorResponse($exception->getMessage(), $exception->getStatusCode());
 
             case $exception->getCode() === 23000 && str_contains($exception->getMessage(), 'Integrity constraint violation'):
-                return errorResponse('Cannot delete or update a parent row: a foreign key constraint fails.', 409);
+                return errorResponse('لا يمكن حذف أو تحديث الصف الأب: فشل قيد المفتاح الخارجي.', 409);
 
             default:
                 return parent::render($request, $exception);

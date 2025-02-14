@@ -45,7 +45,7 @@ class CategoryService
         $category = $this->categoryRepository->update($category, $data);
 
         if (!$category->isDirty()) {
-            return errorResponse('يجب تغيير قيمة واحدة على الأقل', 422);
+            return errorResponse(__('auth.nothing_to_update'), 422);
         }
 
         return new CategoryResource($category);

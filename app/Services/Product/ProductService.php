@@ -46,7 +46,7 @@ class ProductService
         $product = $this->productRepository->update($product, $data);
 
         if (!$product->isDirty()) {
-            return errorResponse('يجب تغيير قيمة واحدة على الأقل', 422);
+            return errorResponse(__('auth.nothing_to_update'), 422);
         }
 
         return new ProductResource($product);

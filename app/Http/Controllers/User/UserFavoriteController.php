@@ -27,7 +27,7 @@ class UserFavoriteController extends Controller
     {
         try {
             if ($user->favorites->isEmpty()) {
-                return errorResponse('لا يوجد منتجات مفضلة', 404);
+                return errorResponse(__('auth.this_user_has_no_favorites'), 404);
             }
 
             $favorites = $user->favorites;
@@ -60,13 +60,13 @@ class UserFavoriteController extends Controller
     {
         try {
             if (!$product) {
-                return errorResponse('يجب إدخال رقم المنتج', 422);
+                return errorResponse(__('auth.product_id_is_required'), 422);
             }
 
             $favorite = $user->favorites()->where('product_id', $product)->first();
 
             if (!$favorite) {
-                return errorResponse('هذا المنتج غير موجود في قائمة المفضلة', 404);
+                return errorResponse(__('auth.this_product_is_not_in_favorites'), 404);
             }
 
             $favorite->delete();
