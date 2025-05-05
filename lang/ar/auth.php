@@ -33,4 +33,5 @@ return [
     'this_user_has_no_favorites' => 'هذا المستخدم ليس لديه أي منتجات مفضلة بعد.',
     'product_id_is_required' => 'معرف المنتج مطلوب.',
     'this_product_is_not_in_favorites' => 'هذا المنتج غير موجود في المفضلة.',
+    'unverified' => 'حسابك غير موثق، يرجى التحقق من بريدك الألكتروني.',
 ];

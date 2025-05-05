@@ -50,6 +50,10 @@ class AuthController extends Controller
             if (Auth::attempt($data)) {
                 $user = User::where('email', $data['email'])->first();
 
+                if (!$user->verified) {
+                    return errorResponse(__('auth.unverified'), 403);
+                }
+
                 if ($user->role === User::ADMIN_USER) {
                     $token = $user->createToken('admin-token', ['view', 'create', 'update', 'delete'])->plainTextToken;
                 } else {
