@@ -7,5 +7,6 @@ nixPkgs = [
   "php82Packages.composer",
   "php82Extensions.mbstring",
   "php82Extensions.pdo_mysql",
-  "php82Extensions.openssl"
+  "php82Extensions.openssl",
+  "nodejs_20"
 ]
