@@ -18,7 +18,7 @@ class CouponFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique()->word,
+            'name' => $this->faker->unique($reset = true)->word,
             'discount' => $this->faker->randomFloat(2, 0, 100),
             'coupon_validity' => $this->faker->dateTimeBetween('now', '+1 year'),
             'status' => $this->faker->randomElement([Coupon::ACTIVE_COUPON, Coupon::INACTIVE_COUPON]),
